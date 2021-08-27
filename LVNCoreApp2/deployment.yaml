@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lvncoreapp2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: lvncoreapp2
+  template:
+    metadata:
+      labels:
+        app: lvncoreapp2
+    spec:
+      containers:
+      - name: lvncoreapp2
+        image: hwacrpoc.azurecr.io/lvncoreapp2
+        ports:
+        - containerPort: 80
+      imagePullSecrets:
+        - name: acr-secret1
+      nodeSelector:
+        kubernetes.io/role: agent
+        beta.kubernetes.io/os: linux
+        type: virtual-kubelet
+      tolerations:
+      - key: virtual-kubelet.io/provider
+        operator: Exists
+      - key: azure.com/aci
+        effect: NoSchedule
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: lvncoreapp2
+spec:
+  type: LoadBalancer
+  ports:
+  - protocol: TCP
+    port: 80
+  selector:
+    app: lvncoreapp2

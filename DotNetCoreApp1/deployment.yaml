@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mynetcoreapp1
+  labels:
+    app: mynetcoreapp1
+spec:
+  replicas: 3
+  template:
+    metadata:
+      name: mynetcoreapp1
+      labels:
+        app: mynetcoreapp1
+    spec:
+      nodeSelector:
+        "kubernetes.io/os": linux
+      containers:
+      - name: mynetcoreapp1
+        image: hwacrpoc.azurecr.io/dotnetapp1
+        resources:
+          limits:
+            cpu: 1
+            memory: 800M
+          requests:
+            cpu: .1
+            memory: 300M
+        ports:
+          - containerPort: 80
+      imagePullSecrets:
+        - name: acr-secret1
+
+  selector:
+    matchLabels:
+      app: mynetcoreapp1
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mynetcoreapp1
+spec:
+  type: LoadBalancer
+  ports:
+  - protocol: TCP
+    port: 80
+  selector:
+    app: mynetcoreapp1

@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/name: load-balancer-example1
+  name: wcfapp1
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: load-balancer-example1
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: load-balancer-example1
+    spec:
+      containers:
+      - image: hwacrpoc.azurecr.io/wcfservice3
+        name: wcfapp1
+        ports:
+        - containerPort: 8080
+      imagePullSecrets:
+        - name: acr-secret1

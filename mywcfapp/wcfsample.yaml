@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wcfsample
+  labels:
+    app: wcfsample
+spec:
+  replicas: 1
+  template:
+    metadata:
+      name: wcfsample
+      labels:
+        app: wcfsample
+    spec:
+      nodeSelector:
+        "kubernetes.io/os": windows
+      containers:
+      - name: wcfsample
+        image: hwacrpoc.azurecr.io/mywcfapp
+        resources:
+          limits:
+            cpu: 1
+            memory: 800M
+          requests:
+            cpu: .1
+            memory: 300M
+        ports:
+          - containerPort: 80
+      imagePullSecrets:
+        - name: acr-secret1
+
+  selector:
+    matchLabels:
+      app: wcfsample
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: wcfsample
+spec:
+  type: LoadBalancer
+  ports:
+  - protocol: TCP
+    port: 80
+  selector:
+    app: wcfsample

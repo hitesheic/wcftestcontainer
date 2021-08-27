@@ -14,7 +14,7 @@ namespace WcfService3
     {
         public string GetData(int value)
         {
-            return string.Format("You entered: {0}", value);
+            return string.Format("My App1 --> You entered: {0}", value);
         }
 
         public CompositeType GetDataUsingDataContract(CompositeType composite)

@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aci-mvc46
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: aci-mvc46
+  template:
+    metadata:
+      labels:
+        app: aci-mvc46
+    spec:
+      containers:
+      - name: aci-mvc46
+        image: hwacrpoc.azurecr.io/myapp1:latest4
+        ports:
+        - containerPort: 80
+      imagePullSecrets:
+        - name: acr-secret1
+      nodeSelector:
+        kubernetes.io/role: agent
+        beta.kubernetes.io/os: windows
+        type: virtual-kubelet
+      tolerations:
+      - key: virtual-kubelet.io/provider
+        operator: Exists
+      - key: azure.com/aci
+        effect: NoSchedule
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: aci-mvc46
+spec:
+  type: LoadBalancer
+  ports:
+  - protocol: TCP
+    port: 80
+  selector:
+    app: aci-mvc46

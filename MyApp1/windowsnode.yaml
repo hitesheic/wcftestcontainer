@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mymvcapp
+  labels:
+    app: mymvcapp
+spec:
+  replicas: 1
+  template:
+    metadata:
+      name: mymvcapp
+      labels:
+        app: mymvcapp
+    spec:
+      nodeSelector:
+        "kubernetes.io/os": windows
+      containers:
+      - name: mymvcapp
+        image: hwacrpoc.azurecr.io/myapp1:latest4
+        resources:
+          limits:
+            cpu: 1
+            memory: 800M
+          requests:
+            cpu: .1
+            memory: 300M
+        ports:
+          - containerPort: 80
+      imagePullSecrets:
+        - name: acr-secret1
+
+  selector:
+    matchLabels:
+      app: mymvcapp
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mymvcapp
+spec:
+  type: LoadBalancer
+  ports:
+  - protocol: TCP
+    port: 80
+  selector:
+    app: mymvcapp
+#---
+#apiVersion: autoscaling/v1
+#kind: HorizontalPodAutoscaler
+#metadata:
+#  name: mymvcapp-hpa
+#spec:
+#  maxReplicas: 3 # define max replica count
+#  minReplicas: 2  # define min replica count
+#  scaleTargetRef:
+#    apiVersion: apps/v1
+#    kind: Deployment
+#    name: mymvcapp
+#  targetCPUUtilizationPercentage: 95 # target CPU utilization

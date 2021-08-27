@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: linuxcoreapp1
+  labels:
+    app: linuxcoreapp1
+spec:
+  replicas: 1
+  template:
+    metadata:
+      name: linuxcoreapp1
+      labels:
+        app: linuxcoreapp1
+    spec:
+      nodeSelector:
+        "kubernetes.io/os": linux
+      containers:
+      - name: linuxcoreapp1
+        image: hwacrpoc.azurecr.io/linuxcoreapp1
+        resources:
+          limits:
+            cpu: 1
+            memory: 800M
+          requests:
+            cpu: .1
+            memory: 300M
+        ports:
+          - containerPort: 80
+      imagePullSecrets:
+        - name: acr-secret1
+
+  selector:
+    matchLabels:
+      app: linuxcoreapp1
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: linuxcoreapp1
+spec:
+  type: LoadBalancer
+  ports:
+  - protocol: TCP
+    port: 80
+  selector:
+    app: linuxcoreapp1

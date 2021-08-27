@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wv-wcfserviceapp1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wv-wcfserviceapp1
+  template:
+    metadata:
+      labels:
+        app: wv-wcfserviceapp1
+    spec:
+      containers:
+      - name: wv-wcfserviceapp1
+        image: hwacrpoc.azurecr.io/wvnwcfserviceapp1
+        ports:
+        - containerPort: 80
+      imagePullSecrets:
+        - name: acr-secret1
+      nodeSelector:
+        kubernetes.io/role: agent
+        beta.kubernetes.io/os: windows
+        type: virtual-kubelet
+      tolerations:
+      - key: virtual-kubelet.io/provider
+        operator: Exists
+      - key: azure.com/aci
+        effect: NoSchedule
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: wv-wcfserviceapp1
+spec:
+  type: LoadBalancer
+  ports:
+  - protocol: TCP
+    port: 80
+  selector:
+    app: wv-wcfserviceapp1

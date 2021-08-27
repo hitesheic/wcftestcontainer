@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wvncoreapp1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wvncoreapp1
+  template:
+    metadata:
+      labels:
+        app: wvncoreapp1
+    spec:
+      containers:
+      - name: wvncoreapp1
+        image: hwacrpoc.azurecr.io/windowscoreapp1:latest1
+        ports:
+        - containerPort: 80
+      imagePullSecrets:
+        - name: acr-secret1
+      nodeSelector:
+        kubernetes.io/role: agent
+        beta.kubernetes.io/os: windows
+        type: virtual-kubelet
+      tolerations:
+      - key: virtual-kubelet.io/provider
+        operator: Exists
+      - key: azure.com/aci
+        effect: NoSchedule
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: wvncoreapp1
+spec:
+  type: LoadBalancer
+  ports:
+  - protocol: TCP
+    port: 80
+  selector:
+    app: wvncoreapp1
