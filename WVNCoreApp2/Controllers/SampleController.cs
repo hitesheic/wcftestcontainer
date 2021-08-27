@@ -21,7 +21,7 @@ namespace WindowsCoreApp1.Controllers
         [HttpGet]
         public string Get()
         {
-            return ".Net 5 - Windows - App 1";
+            return ".Net 5 - Windows Virtual Node - App 1";
         }
     }
 }
