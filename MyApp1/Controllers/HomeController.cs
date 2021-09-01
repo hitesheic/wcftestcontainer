@@ -18,27 +18,38 @@ namespace MyApp1.Controllers
 
         public ActionResult About()
         {
-            ViewBag.Message = ConfigurationManager.AppSettings["AboutText"];
-
-            var apiUrl = ConfigurationManager.AppSettings["ApiUrl"];
-            using (var client = new HttpClient())
+            try
             {
-                client.BaseAddress = new Uri(apiUrl);
-                client.DefaultRequestHeaders.Clear();
-                //Define request data format
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                //Sending request to find web api REST service resource GetAllEmployees using HttpClient
-                HttpResponseMessage Res = client.GetAsync("WeatherForecast").Result;
-                //Checking the response is successful or not which is sent using HttpClient
-                if (Res.IsSuccessStatusCode)
+                ViewBag.Message = ConfigurationManager.AppSettings["AboutText"];
+                var apiUrl = ConfigurationManager.AppSettings["ApiUrl"];
+                using (var client = new HttpClient())
                 {
-                    //Storing the response details recieved from web api
-                    var response = Res.Content.ReadAsStringAsync().Result;
-                    //Deserializing the response recieved from web api and storing into the Employee list
-                    ViewBag.ApiData = response;
-                }
+                    client.BaseAddress = new Uri(apiUrl);
+                    client.DefaultRequestHeaders.Clear();
+                    //Define request data format
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    //Sending request to find web api REST service resource GetAllEmployees using HttpClient
+                    HttpResponseMessage Res = client.GetAsync("Sample").Result;
+                    //Checking the response is successful or not which is sent using HttpClient
+                    if (Res.IsSuccessStatusCode)
+                    {
+                        //Storing the response details recieved from web api
+                        var response = Res.Content.ReadAsStringAsync().Result;
+                        //Deserializing the response recieved from web api and storing into the Employee list
+                        ViewBag.ApiData = response;
+                    }
+                    else
+                    {
+                        ViewBag.ApiData = Res.StatusCode;
+                    }
 
+                }
             }
+            catch (Exception ex)
+            {
+                ViewBag.ApiData = $"{ex.Message} {ex.StackTrace}";
+            }
+
             return View();
         }
 

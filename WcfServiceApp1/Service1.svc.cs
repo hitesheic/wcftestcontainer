@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Runtime.Serialization;
 using System.ServiceModel;
 using System.ServiceModel.Web;
@@ -14,7 +16,72 @@ namespace WcfServiceApp1
     {
         public string GetData(int value)
         {
-            return string.Format("It is WcfServiceApp1. You entered: {0}", value);
+            var data = "It is WcfServiceApp1 on Windows User Node --> ";
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    data += "Calling another service within same windows node --> ";
+                    client.BaseAddress = new Uri("http://windowscoreapp1");
+                    client.DefaultRequestHeaders.Clear();
+                    //Define request data format
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    //Sending request to find web api REST service resource GetAllEmployees using HttpClient
+                    HttpResponseMessage Res = client.GetAsync("Sample").Result;
+                    //Checking the response is successful or not which is sent using HttpClient
+                    if (Res.IsSuccessStatusCode)
+                    {
+                        //Storing the response details recieved from web api
+                        var response = Res.Content.ReadAsStringAsync().Result;
+                        //Deserializing the response recieved from web api and storing into the Employee list
+                        data += "Success --> ";
+                        data += response + "--> ";
+                    }
+                    else
+                    {
+                        data += "Failed --> " + Res.StatusCode.ToString();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                data += "Failed --> " + ex.Message;
+
+            }
+
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    data += "Calling another service from windows node diff subnate --> ";
+                    client.BaseAddress = new Uri("http://windowscoreapp3");
+                    client.DefaultRequestHeaders.Clear();
+                    //Define request data format
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    //Sending request to find web api REST service resource GetAllEmployees using HttpClient
+                    HttpResponseMessage Res = client.GetAsync("Sample").Result;
+                    //Checking the response is successful or not which is sent using HttpClient
+                    if (Res.IsSuccessStatusCode)
+                    {
+                        //Storing the response details recieved from web api
+                        var response = Res.Content.ReadAsStringAsync().Result;
+                        //Deserializing the response recieved from web api and storing into the Employee list
+                        data += "Success --> ";
+                        data += response + "--> ";
+                    }
+                    else
+                    {
+                        data += "Failed --> " + Res.StatusCode.ToString();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                data += "Failed --> " + ex.Message;
+
+            }
+
+            return string.Format($"{data}. You entered: {0}", value);
         }
 
         public CompositeType GetDataUsingDataContract(CompositeType composite)

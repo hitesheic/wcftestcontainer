@@ -4,12 +4,12 @@
 #For more information, please see https://aka.ms/containercompat
 
 #FROM mcr.microsoft.com/dotnet/aspnet:5.0-windowsservercore-ltsc2019 AS base
-FROM mcr.microsoft.com/dotnet/aspnet:5.0-windowsservercore-ltsc2019 AS base
+FROM mcr.microsoft.com/dotnet/aspnet:5.0-nanoserver-1809 AS base
 WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
-FROM mcr.microsoft.com/dotnet/sdk:5.0-windowsservercore-ltsc2019 AS build
+FROM mcr.microsoft.com/dotnet/sdk:5.0-nanoserver-1809 AS build
 WORKDIR /src
 COPY ["WindowsCoreApp1/WindowsCoreApp1.csproj", "WindowsCoreApp1/"]
 RUN dotnet restore "WindowsCoreApp1/WindowsCoreApp1.csproj"

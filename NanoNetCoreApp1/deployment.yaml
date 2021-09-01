@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: windowscoreapp2
+  name: nanonetcoreapp1
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: windowscoreapp2
+      app: nanonetcoreapp1
   template:
     metadata:
       labels:
-        app: windowscoreapp2
+        app: nanonetcoreapp1
     spec:
       nodeSelector:
         "beta.kubernetes.io/os": windows
       containers:
-      - name: windowscoreapp2
-        image: hwacrpoc.azurecr.io/windowscoreapp1:nano20h2
+      - name: nanonetcoreapp1
+        image: hwacrpoc.azurecr.io/nanonetcoreapp1
         ports:
         - containerPort: 80
       imagePullSecrets:
@@ -25,10 +25,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: windowscoreapp2
+  name: nanonetcoreapp1
 spec:
   type: LoadBalancer
   ports:
   - port: 80
   selector:
-    app: windowscoreapp2
+    app: nanonetcoreapp1
