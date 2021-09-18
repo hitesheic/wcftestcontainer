@@ -21,7 +21,13 @@ namespace WindowsCoreApp1.Controllers
         [HttpGet]
         public string Get()
         {
-            return ".Net 5 - Windows - App 1";
+            _logger.LogInformation("Information - Sample.Get called");
+            _logger.LogInformation("Debug - Sample.Get called");
+            _logger.LogTrace("Trace - Sample.Get called");
+            _logger.LogWarning("Warning - Sample.Get called");
+            _logger.LogError("Error - Sample.Get called");
+            _logger.LogCritical("Critical - Sample.Get called");
+            return ".Net 5 - Windows - App 1 - LogsAdded";
         }
     }
 }
